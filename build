@@ -13,7 +13,7 @@ declare OPTIONS="${OPTIONS:-versions/$ARCH/options}"
 build() {
   echo "Building for architecture: $ARCH"
   declare build_files="${*:-$OPTIONS}"
-  
+
   echo "Will build versions files: $build_files"
 
   echo "Building the builder image:"
