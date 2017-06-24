@@ -9,6 +9,7 @@ declare BUILDER_DIR="${BUILDER_DIR:-builder/$ARCH}"
 declare BUILD_IMAGE="${BUILD_IMAGE:-alpine-builder-$ARCH}"
 declare BUILD_PREFIX="${BUILD_PREFIX:-alpine-build-$ARCH-}"
 declare OPTIONS="${OPTIONS:-versions/$ARCH/options}"
+declare NO_PUSH="${NO_PUSH:-}"
 
 build() {
   echo "Building for architecture: $ARCH"
@@ -35,4 +36,19 @@ build() {
    done
 }
 
+push() {
+  [[ "$NO_PUSH" ]] && return
+  declare build_files="${*:-$OPTIONS}"
+
+  echo "Will push versions files: $build_files"
+  for file in $build_files; do
+    source "$file"
+    for tag in "${TAGS[@]}"; do
+      echo "Doing docker push '$tag'"
+      docker push $tag
+    done
+  done
+}
+
 build "$@"
+push "$@"
