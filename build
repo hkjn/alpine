@@ -3,8 +3,7 @@
 TRACE=${TRACE:-""}
 set -euo pipefail; [[ "$TRACE" ]] && set -x
 
-declare ARCH
-ARCH="$(uname -m)"
+declare ARCH="$(uname -m)"
 declare BUILDER_DIR="${BUILDER_DIR:-builder/$ARCH}"
 declare BUILD_IMAGE="${BUILD_IMAGE:-alpine-builder-$ARCH}"
 declare BUILD_PREFIX="${BUILD_PREFIX:-alpine-build-$ARCH-}"
