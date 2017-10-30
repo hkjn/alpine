@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 TRACE=${TRACE:-""}
 set -euo pipefail; [[ "$TRACE" ]] && set -x
 
@@ -14,23 +12,23 @@ build() {
   echo "Building for architecture: $ARCH"
   declare build_files="${*:-$OPTIONS}"
 
-  echo "Will build versions files: $build_files"
+  echo "Will build versions files: ${build_files}"
 
   echo "Building the builder image:"
-  docker build -t "$BUILD_IMAGE" "$BUILDER_DIR"
+  docker build -t "${BUILD_IMAGE}" "${BUILDER_DIR}"
 
   echo "Now, gonna build the resulting images:"
-  for file in $build_files; do
-    echo "Building from file: $file..."
-    source "$file"
+  for file in ${build_files}; do
+    echo "Building from file in ${BUILD_IMAGE}: ${file}..."
+    source "${file}"
     local version_dir
     version_dir="$(dirname "$file")"
     echo "The build options are '${BUILD_OPTIONS[@]}'"
-    docker run --rm -e "TRACE=$TRACE" "$BUILD_IMAGE" "${BUILD_OPTIONS[@]}" > "./$version_dir/rootfs.tar.gz"
+    docker run --rm -e "TRACE=${TRACE}" "${BUILD_IMAGE}" "${BUILD_OPTIONS[@]}" > "./${version_dir}/rootfs.tar.gz"
     echo "Done building rootfs.tar.gz"
     for tag in "${TAGS[@]}"; do
-      echo "Doing docker build -t '$tag' '$version_dir'"
-      docker build -t "$tag" "$version_dir"
+      echo "Doing docker build -t '${tag}' '${version_dir}'"
+      docker build -t "${tag}" "${version_dir}"
     done
    done
 }
